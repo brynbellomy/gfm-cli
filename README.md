@@ -1,3 +1,4 @@
+Queries the GitHub API to render Github Flavored Markdown from the terminal.
 
 # install
 
@@ -14,6 +15,7 @@ If you have `test.md` from which you want to create a `test.html` and set the `<
 $ gfm-cli -b test -t 'My page'
 ```
 
+There will now be a `test.html` next to `test.md`.
 
 # license
 
