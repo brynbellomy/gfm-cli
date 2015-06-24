@@ -1,6 +1,7 @@
 {
   "name": "gfm-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "preferGlobal": true,
   "description": "Queries the GitHub API to render Github Flavored Markdown from the terminal",
   "main": "bin/gfm-cli",
   "scripts": {

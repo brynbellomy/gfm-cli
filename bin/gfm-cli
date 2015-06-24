@@ -3,7 +3,6 @@
 var path  = require('path')
   , fs    = require('fs')
   , jsdom = require('jsdom')
-  , cli   = require('cli-components')
   , exec  = require('child_process').execSync
 
 
@@ -20,8 +19,10 @@ var outputFile = path.join(process.cwd(), `${argv.basename}.html`)
 
 // entry -------
 
-runGripCommand().map(x => {
-    var html = cli.file.contents(outputFile)
+try {
+    runGripCommand()
+
+    var html = fs.readFileSync(outputFile, 'utf8')
 
     jsdom.env(html, (errors, window) => {
         $ = require('jquery')(window)
@@ -31,7 +32,11 @@ runGripCommand().map(x => {
         addStylesheet($)
         writeHTML($, outputFile)
     })
-})
+
+} catch (err) {
+    console.error(err)
+    process.exit(1)
+}
 
 
 // utility functions --------
@@ -58,7 +63,7 @@ function writeHTML ($, outfile) {
 
 
 function runGripCommand () {
-    return cli.result.attempt(() => exec(`grip --gfm ${inputFile} --export ${outputFile}`))
+    return exec(`grip --gfm ${inputFile} --export ${outputFile}`)
 }
 
 function bareFilename(filepath) {
