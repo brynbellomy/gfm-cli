@@ -1,0 +1,67 @@
+#!/usr/bin/env node --harmony --es_staging --harmony_arrow_functions
+
+var path  = require('path')
+  , fs    = require('fs')
+  , jsdom = require('jsdom')
+  , cli   = require('cli-components')
+  , exec  = require('child_process').execSync
+
+
+// command-line arguments --------
+
+var argv = require('optimist')
+            .alias('b', 'basename').describe('b', 'Specify the input and output files using a single basename (input will be BASENAME.md, output will be BASENAME.html)').demand('b')
+            .alias('t', 'title')   .describe('t', 'Sets the title of the generated HTML page.')
+            .argv
+
+var inputFile  = path.join(process.cwd(), `${argv.basename}.md`)
+var outputFile = path.join(process.cwd(), `${argv.basename}.html`)
+
+
+// entry -------
+
+runGripCommand().map(x => {
+    var html = cli.file.contents(outputFile)
+
+    jsdom.env(html, (errors, window) => {
+        $ = require('jquery')(window)
+
+        fixTitle($)
+        // fixImages($)
+        addStylesheet($)
+        writeHTML($, outputFile)
+    })
+})
+
+
+// utility functions --------
+
+function addStylesheet ($) {
+    var cssRef = $('<link type="text/css" rel="stylesheet" href="style-overrides.css" />')
+    $('head').append(cssRef)
+}
+
+function fixTitle($)
+{
+    var newTitle = null
+
+    if (!!argv.title) { newTitle = argv.title }
+    else              { newTitle = $('title').html().replace(/\s*-\s*Grip/, '') } // remove " - Grip" suffix in <title>
+
+    $('title').html(newTitle)
+}
+
+function writeHTML ($, outfile) {
+    var modifiedHTML = $('html').html()
+    fs.writeFileSync(outfile, modifiedHTML) //bareFilename(outputFile) + '-modified.html', modifiedHTML)
+}
+
+
+function runGripCommand () {
+    return cli.result.attempt(() => exec(`grip --gfm ${inputFile} --export ${outputFile}`))
+}
+
+function bareFilename(filepath) {
+    return path.basename(filepath).replace(path.extname(filepath), '')
+}
+

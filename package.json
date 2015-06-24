@@ -1,0 +1,27 @@
+{
+  "name": "gfm-cli",
+  "version": "0.0.1",
+  "description": "Queries the GitHub API to render Github Flavored Markdown from the terminal",
+  "main": "bin/gfm-cli",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "gfm-cli": "bin/gfm-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brynbellomy/gfm-cli"
+  },
+  "author": "bryn austin bellomy <bryn.bellomy@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brynbellomy/gfm-cli/issues"
+  },
+  "homepage": "https://github.com/brynbellomy/gfm-cli",
+  "dependencies": {
+    "jsdom": "4.0.x",
+    "jquery": "2.1.x",
+    "optimist": "0.6.x"
+  }
+}
